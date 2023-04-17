@@ -1,0 +1,90 @@
+
+    {
+    "openapi": "3.0.0",
+    "info": {
+ "version": "1.0.0",
+     "title": "Mi API",
+    "description": "Descripción de mi API"
+    },
+"servers": [
+    {
+    "url": "http://localhost:4000"
+    }
+],
+    "paths": {
+    "/paises": {
+    "get": {
+    "summary": "Obtener una lista de paises",
+    "description": "Obtiene una lista de paises con sus respectivos datos",
+"responses": {
+    "200": {
+    "description": "Operación exitosa",
+    "content": {
+    "application/json": {
+    "schema": {
+    "type": "array",
+    "items": {
+    "type": "object",
+    "properties": {
+    "id": {
+    "type": "integer"
+    },
+    "nombre": {
+    "type": "string"
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    },
+    "/paises/{id}/provincias/{idp}": {
+        "get": {
+
+        "summary": "Obtener una lista de paises",
+        "description": "Obtiene una lista de paises con sus respectivos datos",
+        "parameters":[
+         {
+            "in":  "path",
+            "name": "id",
+            "schema":{
+                "type":"integer",
+                "minumun":1
+            }
+         }   ,
+         
+         { "in":  "path",
+         "name": "idp"}
+        ]
+      ,
+    "responses": {
+        "200": {
+        "description": "Operación exitosa",
+        "content": {
+        "application/json": {
+
+        "schema": {
+        "type": "array",
+        "items": {
+        "type": "object",
+        "properties": {
+        "id": {
+        "type": "integer"
+        },
+        "nombre": {
+        "type": "string"
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+        }
+    }
+    }
