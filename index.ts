@@ -6,11 +6,34 @@ import * as swaggerDocuments from "./swagger";
 import { Controlador_pais } from "./funtions_for_index/controlador_pais";
 import { Controlador_provincia } from "./funtions_for_index/Controlador_Provincia";
 import { Controlador_lluvias } from "./funtions_for_index/controlador_lluvias";
+import mongoose from "mongoose";
+import { testModel } from "./test";
+
 const app: express.Application = express();
 
 const port = 4000;
 
+mongoose
+  .set('strictQuery', false)
+  .connect('mongodb://localhost:27017/api_rest')
+
 app.use(express.json());
+
+app.get('/:nombre', async (req, res) => {
+  const todos_los_datos = await testModel.find({"nombre": req.params.nombre})
+  // testModel.deleteOne({"_id": req.params.id})
+  // testModel.updateOne({"nombre": "mbappe"}, {"trolo": true})
+  // const a = testModel.findOneAndUpdate({"nombre": "mbappe"}, {"trolo": true})
+  // const pais = await paisModel.find({ "_id": req.params.id })
+  // const array_ids = pais.provicias
+  // array_ids.forEach( id => { const provincias_del_pais = await provinciaModel.find({"_id": id})} )
+  res.status(200).send(todos_los_datos)
+})
+
+app.post("/messi" , async(req,res)=>{
+  const aux = await testModel.create(req.body)
+  res.status(200).send(aux)
+})
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocuments));
 
