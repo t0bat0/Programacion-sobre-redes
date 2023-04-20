@@ -2,19 +2,19 @@ import { modelOptions, getModelForClass, prop } from "@typegoose/typegoose";
 import mongoose, { ObjectId } from "mongoose";
 
 @modelOptions({
-    "schemaOptions": { "collection": "paises" }
+    "schemaOptions": { "collection": "provincias" }
 })
 
-class Pais{
+class Provincia{
 
     @prop()
     nombre!: string
 
     @prop()
-    provincias!: Array<ObjectId>
+    lluvias!: Array<ObjectId>
 
 
 
 }
 
-export const paisModel = getModelForClass(Pais)
+export const provinciaModel = getModelForClass(Provincia)

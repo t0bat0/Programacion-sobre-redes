@@ -35,11 +35,7 @@ export class Provincia {
     }
 
     getmmlluviastotales():number{
-        let messi =[]
-        messi =this.getlluvias().map(l => l.getmm_de_agua())
-        console.log(messi)
-        
-        console.log("mesiisisisisisisisisi "+ Math.max(...messi))
+
         
         return this.getlluvias().map(l => l.getmm_de_agua())
                         .reduce((sum, current) => sum + current, 0);
