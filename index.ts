@@ -8,6 +8,7 @@ import { Controlador_provincia } from "./funtions_for_index/Controlador_Provinci
 import { Controlador_lluvias } from "./funtions_for_index/controlador_lluvias";
 import mongoose from "mongoose";
 import { testModel } from "./test";
+import { paisModel } from "./clases_interface/paises_interface";
 
 const app: express.Application = express();
 
@@ -15,25 +16,23 @@ const port = 4000;
 
 mongoose
   .set('strictQuery', false)
-  .connect('mongodb://localhost:27017/api_rest')
+  .connect('mongodb://127.0.0.1:27017/api_rest')
 
 app.use(express.json());
 
-app.get('/:nombre', async (req, res) => {
-  const todos_los_datos = await testModel.find({"nombre": req.params.nombre})
+app.get('/', async (req, res) => {
+ 
+  // const todos_los_datos = await paisModel.find({"nombre": req.params.nombre})
   // testModel.deleteOne({"_id": req.params.id})
   // testModel.updateOne({"nombre": "mbappe"}, {"trolo": true})
   // const a = testModel.findOneAndUpdate({"nombre": "mbappe"}, {"trolo": true})
   // const pais = await paisModel.find({ "_id": req.params.id })
   // const array_ids = pais.provicias
   // array_ids.forEach( id => { const provincias_del_pais = await provinciaModel.find({"_id": id})} )
-  res.status(200).send(todos_los_datos)
+    res.status(200).send(await paisModel.find())
 })
 
-app.post("/messi" , async(req,res)=>{
-  const aux = await testModel.create(req.body)
-  res.status(200).send(aux)
-})
+
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocuments));
 
@@ -41,8 +40,8 @@ app.get("/messi", (_req, _rest) => {
   _rest.send("FUNCIONA");
 });
 
-app.get("/paises", (_req, _rest) => {
-  Controlador_pais.paises(_req, _rest);
+app.get("/paises",  (_req, _rest) => {
+   Controlador_pais.paises(_req, _rest);
 });
 app.get("/paises/:id", (_req, _res) => {
   Controlador_pais.pais_x_id_get(_req, _res);
