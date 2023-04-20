@@ -32,65 +32,74 @@ export class Controlador_pais {
     _res.send(await paisModel.find());
   }
   static async pais_x_id_get(_req: any, _res: any) {
-    _res.send(await paisModel.find({ "_id": _req.params.id }));
+    _res.send(await paisModel.find({ _id: _req.params.id }));
     //const pais = await paisModel.findById({ "_id": _req.params.id }).exec()
     //  const array_ids = pais?.provincias || []
     // array_ids.forEach( id => { const provincias_del_pais = await provinciaModel.find({"_id": id})} )
   }
   static async pais_x_id_put(_req: any, _res: any) {
     {
-      const pais = await paisModel.findOneAndReplace({_id: _req.params.id}, _req.body)
-      _res.send(pais)
+      const pais = await paisModel.findOneAndReplace(
+        { _id: _req.params.id },
+        _req.body
+      );
+      _res.send(pais);
     }
   }
 
   static async pais_x_id_patch(_req: any, _res: any) {
-    const pais = await paisModel.findOneAndUpdate({_id:_req.params.id},_req.body) 
+    const pais = await paisModel.findOneAndUpdate(
+      { _id: _req.params.id },
+      _req.body
+    );
   }
 
   static async pais_x_id_delete(_req: any, _res: any) {
-   const pais = await paisModel.deleteOne({_id: _req.params.id})
+    const pais = await paisModel.deleteOne({ _id: _req.params.id });
   }
   static async pais_x_id_post(_req: any, _res: any) {
     const pais = await paisModel.create(_req.body);
     const pais_aux = await pais.save();
-    _res.status(201).send(pais_aux);
+    _res.status(200).send(pais_aux);
   }
 
   static pais_x_id_cant_de_lluvias(_req: any, _res: any) {
-    paisModel.findById({ "_id": _req.params.id }).exec().then((pais)=>{
-      provinciaModel.find({ "_id": pais!.provincias}).exec().then((provincias)=>{
-        console.log(provincias.length) 
-        const prov=provincias.flatMap((v)=> v.lluvias)
-        lluviaModel.find({ "_id": prov}).exec().then((lluvias2)=>{
-          const cant_de_lluvias =lluvias2.map(ll=> ll.mm_de_agua).reduce((sum, current)=> sum.valueOf() + current.valueOf(),0)
-          //this.getlluvias().map(l => l.getmm_de_agua())
-          //.reduce((sum, current) => sum + current, 0);
-          // .reduce((sum, current) => sum + current, 0)
-          console.log(cant_de_lluvias)
-        });
-      })  
-
-    })
-    
-   
-
-    /*let pais: Pais | undefined;
-   
-    pais = Paises.find((pais) => {
-      return pais.getid() == Number(_req.params.id);
-    });
-
-    if (pais) {
-      _res.json(
-        pais
-          .getprovincias()
-          .map((p) => p.getmmlluviastotales())
-          .reduce((sum, current) => sum + current, 0)
-      );
-    }*/
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            console.log(provincias.length);
+            const prov = provincias.flatMap((v) => v.lluvias);
+            lluviaModel
+              .find({ _id: prov })
+              .exec()
+              .then((lluvias2) => {
+                const cant_de_lluvias = lluvias2
+                  .map((ll) => ll.mm_de_agua)
+                  .reduce(
+                    (sum, current) => sum.valueOf() + current.valueOf(),
+                    0
+                  );
+                _res.send(cant_de_lluvias).status(200);
+              });
+          });
+      });
   }
   static pais_x_id_prov_con_mas_lluvias(_req: any, _res: any) {
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {console.log(provincias)});
+      });
+    /*
     let pais: Pais | undefined;
 
     pais = Paises.find((pais) => {
@@ -111,7 +120,7 @@ export class Controlador_pais {
           )
           ?.getnombre()
       );
-    }
+    }*/
   }
 
   static pais_x_id_cant_de_lluvias_en_un_mes(_req: any, _res: any) {
@@ -131,5 +140,4 @@ export class Controlador_pais {
       );
     }
   }
-
 }

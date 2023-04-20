@@ -105,7 +105,7 @@ app.post("/paises", (_req, _rest) => {
 });
 
 app.get("/paises/:id/provincia_con_mas_lluvias", (_req, _res) => {
- // Controlador_pais.pais_x_id_prov_con_mas_lluvias(_req, _res);
+  Controlador_pais.pais_x_id_prov_con_mas_lluvias(_req, _res);
 });
 
 app.get("/paises/:id/cant_de_lluvias_en_mes/:mes", (_req, _res) => {
