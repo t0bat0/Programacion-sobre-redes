@@ -6,6 +6,7 @@ import { Provincia } from "../Provincia";
 import { lluviaModel } from "../clases_interface/lluvias_interface";
 import { paisModel } from "../clases_interface/paises_interface";
 import { provinciaModel } from "../clases_interface/provincias_interface";
+import { log } from "console";
 let Paises: Array<Pais> = new Array<Pais>();
 
 let messicountry: Pais = new Pais(10, "lionel messi");
@@ -84,10 +85,18 @@ export class Controlador_pais {
                     (sum, current) => sum.valueOf() + current.valueOf(),
                     0
                   );
-                _res.send(cant_de_lluvias).status(200);
+                console.log(cant_de_lluvias);
+                _res.status(200);
               });
           });
       });
+  }
+  static async asyncReduce(array: any, asyncCallback: any, initialValue: any) {
+    let accumulator = initialValue;
+    for (const value of array) {
+      accumulator = await asyncCallback(accumulator, value);
+    }
+    return accumulator;
   }
   static pais_x_id_prov_con_mas_lluvias(_req: any, _res: any) {
     paisModel
@@ -97,7 +106,56 @@ export class Controlador_pais {
         provinciaModel
           .find({ _id: pais!.provincias })
           .exec()
-          .then((provincias) => {console.log(provincias)});
+          .then(async (provincias) => {
+            let a = provincias.map((ll) => {return{"nombre": ll.nombre, "lluvias": ll.lluvias}});
+            let b = provincias.map((ll) => ll.lluvias)
+           // console.log(Array.from(a.values()))
+           
+            const sums = Array.from(a.values()).map(
+              async (arr) => {return {"provincia": arr.nombre, "lluvias":
+                await Controlador_pais.asyncReduce(
+                  arr.lluvias,
+                  async (accumulator: any, currentValue: any) => {
+                    
+                    let mm = 0;
+                    await lluviaModel
+                      .find({ _id: currentValue })
+                      .exec()
+                      .then((ll: any) => {
+                        mm = ll[0].mm_de_agua;
+                      });
+                    
+                    return  accumulator + mm;
+                  },
+                  0
+                )}}
+            );
+
+            await Promise.all(sums)
+              .then((results) => {results.map((value) => {Number(value); });
+              const highestValueObject = results.reduce((prev, current) => {
+                return (prev.lluvias > current.lluvias) ? prev : current;
+              });
+              console.log(highestValueObject)
+               })
+               
+          //   .then((numbers) => console.log( Math.max(...numbers)));
+            // console.log(sums);
+            _res.status(200);
+            //  console.log(a);
+            /*let b = provincias.flatMap((ll) => ll.lluvias);
+            lluviaModel
+              .find({ _id: b })
+              .exec()
+              .then((lluvias) => {
+                //  console.log(lluvias)
+                //let ll = lluvias.map(ll=> ll.mm_de_agua).reduce
+                // console.log(ll)
+                _res.status(200);
+              });*/
+
+            //console.log("el primero:"  + a[0] + "\"" + "el segundo:" + a[1] )
+          });
       });
     /*
     let pais: Pais | undefined;
