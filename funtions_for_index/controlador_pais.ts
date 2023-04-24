@@ -107,16 +107,18 @@ export class Controlador_pais {
           .find({ _id: pais!.provincias })
           .exec()
           .then(async (provincias) => {
-            let a = provincias.map((ll) => {return{"nombre": ll.nombre, "lluvias": ll.lluvias}});
-            let b = provincias.map((ll) => ll.lluvias)
-           // console.log(Array.from(a.values()))
-           
-            const sums = Array.from(a.values()).map(
-              async (arr) => {return {"provincia": arr.nombre, "lluvias":
-                await Controlador_pais.asyncReduce(
+            let a = provincias.map((ll) => {
+              return { nombre: ll.nombre, lluvias: ll.lluvias };
+            });
+            let b = provincias.map((ll) => ll.lluvias);
+            // console.log(Array.from(a.values()))
+
+            const sums = Array.from(a.values()).map(async (arr) => {
+              return {
+                provincia: arr.nombre,
+                lluvias: await Controlador_pais.asyncReduce(
                   arr.lluvias,
                   async (accumulator: any, currentValue: any) => {
-                    
                     let mm = 0;
                     await lluviaModel
                       .find({ _id: currentValue })
@@ -124,24 +126,27 @@ export class Controlador_pais {
                       .then((ll: any) => {
                         mm = ll[0].mm_de_agua;
                       });
-                    
-                    return  accumulator + mm;
+
+                    return accumulator + mm;
                   },
                   0
-                )}}
-            );
+                ),
+              };
+            });
 
-            await Promise.all(sums)
-              .then((results) => {results.map((value) => {Number(value); });
-              const highestValueObject = results.reduce((prev, current) => {
-                return (prev.lluvias > current.lluvias) ? prev : current;
+            await Promise.all(sums).then((results) => {
+              results.map((value) => {
+                Number(value);
               });
-              console.log(highestValueObject)
-               })
-               
-          //   .then((numbers) => console.log( Math.max(...numbers)));
+              const highestValueObject = results.reduce((prev, current) => {
+                return prev.lluvias > current.lluvias ? prev : current;
+              });
+              _res.status(200).send(highestValueObject);
+            });
+
+            //   .then((numbers) => console.log( Math.max(...numbers)));
             // console.log(sums);
-            _res.status(200);
+
             //  console.log(a);
             /*let b = provincias.flatMap((ll) => ll.lluvias);
             lluviaModel
@@ -182,6 +187,31 @@ export class Controlador_pais {
   }
 
   static pais_x_id_cant_de_lluvias_en_un_mes(_req: any, _res: any) {
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            console.log(provincias.length);
+            const prov = provincias.flatMap((v) => v.lluvias);
+            lluviaModel
+              .find({ _id: prov })
+              .exec()
+              .then((lluvias) => {
+                const cant_de_lluvias = lluvias
+                .map((ll) => ll.fecha.getMonth() == _req.params.mes ? ll.mm_de_agua : 0)
+                  .reduce(
+                    (sum, current) => sum.valueOf() + current.valueOf(),
+                    0
+                  );
+                console.log(cant_de_lluvias);
+                _res.status(200);
+              });
+          });
+      });
     let pais: Pais | undefined;
 
     pais = Paises.find((pais) => {
