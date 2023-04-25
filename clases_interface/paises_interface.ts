@@ -2,7 +2,7 @@ import { modelOptions, getModelForClass, prop } from "@typegoose/typegoose";
 import mongoose, { ObjectId } from "mongoose";
 
 @modelOptions({
-    "schemaOptions": { "collection": "Paises" }
+    "schemaOptions": { "collection": "paises" }
 })
 
 class Pais{

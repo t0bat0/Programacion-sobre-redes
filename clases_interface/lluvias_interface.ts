@@ -2,7 +2,7 @@ import { modelOptions, getModelForClass, prop } from "@typegoose/typegoose";
 
 
 @modelOptions({
-    "schemaOptions": { "collection": "LLuvias" , timestamps: false}
+    "schemaOptions": { "collection": "lluvias" , timestamps: false}
 })
 
 class LLuvia{
