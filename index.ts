@@ -109,7 +109,7 @@ app.get("/paises/:id/provincia_con_mas_lluvias", (_req, _res) => {
 });
 
 app.get("/paises/:id/cant_de_lluvias_en_mes/:mes", (_req, _res) => {
-  //Controlador_pais.pais_x_id_cant_de_lluvias_en_un_mes(_req, _res);
+  Controlador_pais.pais_x_id_cant_de_lluvias_en_un_mes(_req, _res);
 });
 
 app.listen(port, () => console.log(`Escuchando en el puerto ${port}!`));

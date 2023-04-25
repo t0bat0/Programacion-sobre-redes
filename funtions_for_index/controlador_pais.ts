@@ -202,7 +202,7 @@ export class Controlador_pais {
               .exec()
               .then((lluvias) => {
                 const cant_de_lluvias = lluvias
-                .map((ll) => ll.fecha.getMonth() == _req.params.mes ? ll.mm_de_agua : 0)
+                .map((ll) => ll.fecha.getMonth() == _req.params.mes-1 ? ll.mm_de_agua : 0)
                   .reduce(
                     (sum, current) => sum.valueOf() + current.valueOf(),
                     0
@@ -212,7 +212,7 @@ export class Controlador_pais {
               });
           });
       });
-    let pais: Pais | undefined;
+    /*(let pais: Pais | undefined;
 
     pais = Paises.find((pais) => {
       return pais.getid() == Number(_req.params.id);
@@ -226,6 +226,6 @@ export class Controlador_pais {
           .reduce((sum, current) => sum + current, 0) /
           pais.getprovincias().length
       );
-    }
+    }*/
   }
 }

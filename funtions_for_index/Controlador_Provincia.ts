@@ -1,17 +1,30 @@
 import { Pais } from "../Pais";
 import { Provincia } from "../Provincia";
+import { paisModel } from "../clases_interface/paises_interface";
+import { provinciaModel } from "../clases_interface/provincias_interface";
 
 let Paises: Array<Pais> = new Array<Pais>();
 
 export class Controlador_provincia {
   static povincias(_req: any, _res: any) {
-    let pais: Pais | undefined;
+    paisModel.findById({_id:_req.params.id}).exec().then((pais)=>{
+      provinciaModel.find({_id:pais!.provincias}).exec().then((provincias)=>{
+
+        _res.send(provincias).status(200)
+      })
+
+       
+
+
+    })
+
+    /*let pais: Pais | undefined;
     pais = Paises.find((pais) => {
       return pais.getid() == Number(_req.params.id);
     });
     if (pais) {
       _res.json(pais.getprovincias());
-    }
+    }*/
   }
   static prov_x_id_get(_req: any, _res: any) {
     let pais: Pais | undefined;
