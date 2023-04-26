@@ -96,6 +96,7 @@ export class Controlador_provincia {
   }
 
   static prov_x_id_patch(_req: any, _res: any) {
+    
     paisModel
       .findById({ _id: _req.params.id })
       .exec()

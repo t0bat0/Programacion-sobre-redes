@@ -4,30 +4,29 @@ import { LLuvia } from "../Lluvia";
 import { paisModel } from "../clases_interface/paises_interface";
 import { provinciaModel } from "../clases_interface/provincias_interface";
 import { lluviaModel } from "../clases_interface/lluvias_interface";
+import { log } from "console";
 let Paises: Array<Pais> = new Array<Pais>();
 
 export class Controlador_lluvias {
   static lluvias(_req: any, _res: any) {
     paisModel
-    .findById({ _id: _req.params.id })
-    .exec()
-    .then((pais) => {
-      provinciaModel
-        .find({ _id: pais!.provincias })
-        .exec()
-        .then((provincias) => {
-          const prov = provincias.flatMap((v) => v.lluvias);
-          console.log(prov)
-          lluviaModel
-            .find({ _id: prov })
-            .exec()
-            .then((lluvias2) => {
-              
-              _res.send(lluvias2).status(200)
-             
-            });
-        });
-    });
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            const prov = provincias.flatMap((v) => v.lluvias);
+            // console.log(prov)
+            lluviaModel
+              .find({ _id: prov })
+              .exec()
+              .then((lluvias2) => {
+                _res.send(lluvias2).status(200);
+              });
+          });
+      });
     /*let pais: Pais | undefined;
     pais = Paises.find((pais) => {
       return pais.getid() == Number(_req.params.id);
@@ -43,25 +42,34 @@ export class Controlador_lluvias {
     }*/
   }
   static lluvia_x_id_get(_req: any, _res: any) {
-    
     paisModel
-    .findById({ _id: _req.params.id })
-    .exec()
-    .then((pais) => {
-      provinciaModel
-        .find({ _id: pais!.provincias })
-        .exec()
-        .then((provincias) => {
-          provinciaModel
-            .find({ _id:_req.params.idp})
-            .exec()
-            .then((provincia) => {
-              console.log(provincia)
-              _res.status(200)
-             
-            });
-        });
-    });
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            provinciaModel
+              .find({ _id: _req.params.idp })
+              .exec()
+              .then((provincia) => {
+                let array_ids = provincia.flatMap((ll) => ll.lluvias);
+
+                lluviaModel
+                  .find({ _id: array_ids })
+                  .exec()
+                  .then((ll) => {
+                    lluviaModel
+                      .findById({ _id: _req.params.idl })
+                      .exec()
+                      .then((lluvia) => {
+                        _res.status(200).send(lluvia);
+                      });
+                  });
+              });
+          });
+      });
     /*let pais: Pais | undefined;
     pais = Paises.find((pais) => {
       return pais.getid() == Number(_req.params.id);
@@ -81,7 +89,37 @@ export class Controlador_lluvias {
     }*/
   }
   static lluvia_x_id_put(_req: any, _res: any) {
-    let pais: Pais | undefined;
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            provinciaModel
+              .find({ _id: _req.params.idp })
+              .exec()
+              .then((provincia) => {
+                let array_ids = provincia.flatMap((ll) => ll.lluvias);
+
+                lluviaModel
+                  .find({ _id: array_ids })
+                  .exec()
+                  .then((ll) => {
+                    lluviaModel
+                      .findOneAndReplace({ _id: _req.params.idl }, _req.body)
+                      .then((lluvia) => {
+                        console.log(lluvia);
+
+                        _res.status(200).send(lluvia);
+                      });
+                  });
+              });
+          });
+      });
+
+    /*let pais: Pais | undefined;
 
     pais = Paises.find((item) => {
       return item.id_pais == Number(_req.params.id);
@@ -103,11 +141,42 @@ export class Controlador_lluvias {
         }
         _res.json(lluvia);
       }
-    }
+    }*/
   }
 
   static lluvia_x_id_patch(_req: any, _res: any) {
-    let pais: Pais | undefined;
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            provinciaModel
+              .find({ _id: _req.params.idp })
+              .exec()
+              .then((provincia) => {
+                let array_ids = provincia.flatMap((ll) => ll.lluvias);
+                lluviaModel
+                  .find({ _id: array_ids })
+                  .exec()
+                  .then((ll) => {
+                    lluviaModel
+                      .findByIdAndUpdate({ _id: _req.params.idl }, _req.body, {
+                        new: true,
+                      })
+                      .then((lluvia) => {
+                        console.log(lluvia);
+
+                        _res.status(200).send(lluvia);
+                      });
+                  });
+              });
+          });
+      });
+
+    /* let pais: Pais | undefined;
     pais = Paises.find((item) => {
       return item.id_pais == Number(_req.params.id);
     });
@@ -131,11 +200,39 @@ export class Controlador_lluvias {
         }
       }
       _res.json(LLuvia);
-    }
+    }*/
   }
 
   static lluvia_x_id_delete(_req: any, _res: any) {
-    const pais = Paises.find((item) => {
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            provinciaModel
+              .find({ _id: _req.params.idp })
+              .exec()
+              .then((provincia) => {
+                let array_ids = provincia.flatMap((ll) => ll.lluvias);
+                lluviaModel
+                  .find({ _id: array_ids })
+                  .exec()
+                  .then((ll) => {
+                    lluviaModel
+                      .findOneAndDelete({ _id: _req.params.idl })
+                      .then((lluvia) => {
+                        console.log(lluvia);
+
+                        _res.status(200).send(lluvia);
+                      });
+                  });
+              });
+          });
+      });
+    /* const pais = Paises.find((item) => {
       return item.id_pais == Number(_req.params.id);
     });
     if (pais) {
@@ -153,10 +250,42 @@ export class Controlador_lluvias {
         }
       }
     }
-    _res.status(204).send();
+    _res.status(204).send();*/
   }
   static lluvia_x_id_post(_req: any, _res: any) {
-    let pais: Pais | undefined;
+    paisModel
+      .findById({ _id: _req.params.id })
+      .exec()
+      .then((pais) => {
+        provinciaModel
+          .find({ _id: pais!.provincias })
+          .exec()
+          .then((provincias) => {
+            provinciaModel
+              .find({ _id: _req.params.idp })
+              .exec()
+              .then((provincia) => {
+                lluviaModel.create(_req.body).then((lluvia) => {
+                  lluvia.save().then((ll) => {
+                    provincia[0].lluvias.push(
+                      //@ts-ignore
+                      ll._id
+                    );
+                    provinciaModel
+                      .findOneAndUpdate(
+                        { _id: _req.params.idp },
+                        { lluvias: provincia[0].lluvias }
+                      )
+                      .then((lluviacreada) => {
+                        _res.send(lluvia).status(200);
+                      });
+                  });
+                });
+              });
+          });
+      });
+
+    /*let pais: Pais | undefined;
     pais = Paises.find((pais) => {
       return pais.getid() == Number(_req.params.id);
     });
@@ -172,6 +301,6 @@ export class Controlador_lluvias {
         provincia.getlluvias().push(lluvias1);
         _res.json(lluvias1);
       }
-    }
+    }*/
   }
 }

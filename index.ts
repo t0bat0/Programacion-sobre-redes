@@ -78,6 +78,7 @@ app.put("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
   Controlador_lluvias.lluvia_x_id_put(_req, _res);
 });
 app.patch("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
+  
   Controlador_lluvias.lluvia_x_id_patch;
 });
 app.delete("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
