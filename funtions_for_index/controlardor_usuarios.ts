@@ -1,8 +1,8 @@
 import { AnyArray, Schema } from "mongoose";
 import { LLuvia } from "../Lluvia";
 import { Pais } from "../Pais";
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { Provincia } from "../Provincia";
 import { lluviaModel } from "../clases_interface/lluvias_interface";
 import { paisModel } from "../clases_interface/paises_interface";
@@ -23,39 +23,47 @@ const authMiddleware = async (req, res, next) => {
 
   if (!authHeader) {
     return res.status(401).json({ message:
-*/ 
+*/
 
-u
+export class controlador_usuarios {
+  static async comprobacion_de_usuario(_req: any, _res: any) {
+    const { username, password } = _req.body;
 
+    UserModel.findOne({ username }).then((user) => {
+      if (!user) {
+        return _res
+          .status(401)
+          .json({ message: "Invalid username or password" });
+      }
 
-export class controlador_usuarios{
-    static async comprobacion_de_usuario(_req: any,_res: any){
+      bcrypt.compare(password, user.contraseña).then((isvalid) => {
+        if (!isvalid) {
+          return _res
+            .status(401)
+            .json({ message: "Invalid username or password" });
+        }
+      });
+      process.env;
+      const clave = "tobato?";
+      const token = jwt.sign({ _id: user._id }, clave);
 
-        const { username, password } = _req.body;
-
-   UserModel.findOne({ username }).then((user=>{
-    if (!user) {
-    return _res.status(401).json({ message: 'Invalid username or password' });
+      return _res.status(200).json({ token });
+    });
   }
 
-  bcrypt.compare(password, user.contraseña).then((isvalid)=>{ 
-    if (!isvalid) {
-    return _res.status(401).json({ message: 'Invalid username or password' });
-  }})
-  process.env
+  static registrar_usuario(_req: any, _res: any) {
+    bcrypt.genSalt(10, (salt)=>{
+      bcrypt.hash(_req.body.contraseña, 10).then((password) => {
+        UserModel.create({
+          nombre: _req.body.nombre,
+          contraseña: password,
+        }).then((User) => {
+          User.save().then(()=>{
+            _res.status(200)
+          })
+        });
+      });
+    })
 
-  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET: );
-
-  return _res.status(200).json({ token });
-
-}));
-  
-
-  
-
- 
-
-
-
-    }
+  }
 }

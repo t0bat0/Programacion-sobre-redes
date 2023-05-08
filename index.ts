@@ -8,6 +8,7 @@ import { Controlador_lluvias } from "./funtions_for_index/controlador_lluvias";
 import mongoose from "mongoose";
 import { paisModel } from "./clases_interface/paises_interface";
 import { controlador_provincia } from "./funtions_for_index/Controlador_Provincia";
+import { controlador_usuarios } from "./funtions_for_index/controlardor_usuarios";
 
 const app: express.Application = express();
 
@@ -114,3 +115,10 @@ app.get("/paises/:id/cant_de_lluvias_en_mes/:mes", (_req, _res) => {
 });
 
 app.listen(port, () => console.log(`Escuchando en el puerto ${port}!`));
+
+app.post("/login", (_req, _res) =>{
+  controlador_usuarios.comprobacion_de_usuario(_req,_res)
+})
+app.post("/signin", (_req, _res) =>{
+  controlador_usuarios.registrar_usuario(_req,_res)
+})
