@@ -11,7 +11,7 @@ class Usuario{
     nombre!: string
 
     @prop()
-    contraseña!: string
+    passw!: string
 
 
 }

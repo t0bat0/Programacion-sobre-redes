@@ -9,19 +9,19 @@ import mongoose from "mongoose";
 import { paisModel } from "./clases_interface/paises_interface";
 import { controlador_provincia } from "./funtions_for_index/Controlador_Provincia";
 import { controlador_usuarios } from "./funtions_for_index/controlardor_usuarios";
+import { middleware } from "./funtions_for_index/midleware";
 
 const app: express.Application = express();
 
 const port = 4000;
 
 mongoose
-  .set('strictQuery', false)
-  .connect('mongodb://127.0.0.1:27017/api_rest')
+  .set("strictQuery", false)
+  .connect("mongodb://127.0.0.1:27017/api_rest");
 
 app.use(express.json());
 
-app.get('/', async (req, res) => {
- 
+app.get("/", async (req, res) => {
   // const todos_los_datos = await paisModel.find({"nombre": req.params.nombre})
   // testModel.deleteOne({"_id": req.params.id})
   // testModel.updateOne({"nombre": "mbappe"}, {"trolo": true})
@@ -29,19 +29,18 @@ app.get('/', async (req, res) => {
   // const pais = await paisModel.find({ "_id": req.params.id })
   // const array_ids = pais.provicias
   // array_ids.forEach( id => { const provincias_del_pais = await provinciaModel.find({"_id": id})} )
-    res.status(200).send(await paisModel.find())
-})
+  res.status(200).send(await paisModel.find());
+});
 
-
-
+app.use ("/paises", middleware.verificar_token)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocuments));
 
 app.get("/messi", (_req, _rest) => {
   _rest.send("FUNCIONA");
 });
 
-app.get("/paises",  (_req, _rest) => {
-   Controlador_pais.paises(_req, _rest);
+app.get("/paises", (_req, _rest) => {
+  Controlador_pais.paises(_req, _rest);
 });
 app.get("/paises/:id", (_req, _res) => {
   Controlador_pais.pais_x_id_get(_req, _res);
@@ -63,7 +62,6 @@ app.patch("/paises/:id/provincias/:idp", (_req, _res) => {
   controlador_provincia.prov_x_id_patch(_req, _res);
 });
 app.delete("/paises/:id/provincias/:idp", (_req, _res) => {
-
   controlador_provincia.prov_x_id_delete(_req, _res);
 });
 app.get("/paises/:id/provincias/:idp/lluvias", (_req, _res) => {
@@ -79,7 +77,6 @@ app.put("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
   Controlador_lluvias.lluvia_x_id_put(_req, _res);
 });
 app.patch("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
-  
   Controlador_lluvias.lluvia_x_id_patch(_req, _res);
 });
 app.delete("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
@@ -116,9 +113,18 @@ app.get("/paises/:id/cant_de_lluvias_en_mes/:mes", (_req, _res) => {
 
 app.listen(port, () => console.log(`Escuchando en el puerto ${port}!`));
 
-app.post("/login", (_req, _res) =>{
-  controlador_usuarios.comprobacion_de_usuario(_req,_res)
-})
-app.post("/signin", (_req, _res) =>{
-  controlador_usuarios.registrar_usuario(_req,_res)
-})
+app.post("/login", (_req, _res) => {
+  controlador_usuarios
+    .comprobacion_de_usuario_p(_req.body.nombre, _req.body.passw)
+    .then((v) => {
+      _res.status(200).json({ v });
+    })
+    .catch(() => {
+      _res.status(401).json({ message: "Invalid username or password" });
+    });
+});
+app.post("/signin", (_req, _res) => {
+  controlador_usuarios.registrar_usuario(_req.body.nombre,_req.body.passw).then((prom)=>{
+    _res.status(200).send(prom)
+  })
+});

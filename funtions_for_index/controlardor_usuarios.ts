@@ -24,46 +24,58 @@ const authMiddleware = async (req, res, next) => {
   if (!authHeader) {
     return res.status(401).json({ message:
 */
+const clave = "tobato";
 
 export class controlador_usuarios {
-  static async comprobacion_de_usuario(_req: any, _res: any) {
-    const { username, password } = _req.body;
+  static async comprobacion_de_usuario(username: String, password: string) {
+    const user = await UserModel.findOne(username);
+    if (!user) {
+      return false;
+    }
 
-    UserModel.findOne({ username }).then((user) => {
-      if (!user) {
-        return _res
-          .status(401)
-          .json({ message: "Invalid username or password" });
-      }
+    const isvalid = await bcrypt.compare(password, user.passw);
+    if (!isvalid) {
+      return false;
+    }
 
-      bcrypt.compare(password, user.contraseña).then((isvalid) => {
-        if (!isvalid) {
-          return _res
-            .status(401)
-            .json({ message: "Invalid username or password" });
+    const token = jwt.sign({ _id: user._id }, clave);
+
+    return token;
+  }
+
+  static comprobacion_de_usuario_p(username: string, password: string) {
+    return new Promise((resolve, reject) => {
+      UserModel.findOne({ nombre: username }).then((user) => {
+        if (!user) {
+          reject();
         }
-      });
-      process.env;
-      const clave = "tobato?";
-      const token = jwt.sign({ _id: user._id }, clave);
+        bcrypt.compare(password, user!.passw).then((isvalid) => {
+          if (!isvalid) {
+            reject();
+          }
 
-      return _res.status(200).json({ token });
+          const token = jwt.sign({ _id: user!._id }, clave);
+
+          return resolve(token);
+        });
+      });
     });
   }
 
-  static registrar_usuario(_req: any, _res: any) {
-    bcrypt.genSalt(10, (salt)=>{
-      bcrypt.hash(_req.body.contraseña, 10).then((password) => {
+  static registrar_usuario(username: string, password: string) {
+    return new Promise((resolve, reject) => {
+      bcrypt.hash(password, 10).then((password) => {
         UserModel.create({
-          nombre: _req.body.nombre,
-          contraseña: password,
+          nombre: username,
+          passw: password,
         }).then((User) => {
-          User.save().then(()=>{
-            _res.status(200)
-          })
+          User.save().then(() => {
+            resolve(User);
+          });
         });
       });
-    })
-
+    });
   }
+
+  
 }
