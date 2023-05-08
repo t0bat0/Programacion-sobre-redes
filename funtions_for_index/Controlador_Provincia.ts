@@ -6,7 +6,7 @@ import { provinciaModel } from "../clases_interface/provincias_interface";
 
 let Paises: Array<Pais> = new Array<Pais>();
 
-export class Controlador_provincia {
+export class controlador_provincia {
   static povincias(_req: any, _res: any) {
     paisModel
       .findById({ _id: _req.params.id })

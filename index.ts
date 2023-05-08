@@ -4,11 +4,10 @@ import { LLuvia } from "./Lluvia";
 import * as swaggerUi from "swagger-ui-express";
 import * as swaggerDocuments from "./swagger";
 import { Controlador_pais } from "./funtions_for_index/controlador_pais";
-import { Controlador_provincia } from "./funtions_for_index/Controlador_Provincia";
 import { Controlador_lluvias } from "./funtions_for_index/controlador_lluvias";
 import mongoose from "mongoose";
-import { testModel } from "./test";
 import { paisModel } from "./clases_interface/paises_interface";
+import { controlador_provincia } from "./funtions_for_index/Controlador_Provincia";
 
 const app: express.Application = express();
 
@@ -47,23 +46,24 @@ app.get("/paises/:id", (_req, _res) => {
   Controlador_pais.pais_x_id_get(_req, _res);
 });
 app.get("/paises/:id/provincias", (_req, _res) => {
-  Controlador_provincia.povincias(_req, _res);
+  controlador_provincia.povincias(_req, _res);
 });
 app.get("/paises/:id/provincias/:idp", (_req, _res) => {
-  Controlador_provincia.prov_x_id_get(_req, _res);
+  controlador_provincia.prov_x_id_get(_req, _res);
 });
 app.post("/paises/:id/provincias", (_req, _res) => {
-  Controlador_provincia.prov_x_id_post(_req, _res);
+  controlador_provincia.prov_x_id_post(_req, _res);
 });
 app.put("/paises/:id/provincias/:idp", (_req, _res) => {
-  Controlador_provincia.prov_x_id_put(_req, _res);
+  controlador_provincia.prov_x_id_put(_req, _res);
 });
 
 app.patch("/paises/:id/provincias/:idp", (_req, _res) => {
-  Controlador_provincia.prov_x_id_patch(_req, _res);
+  controlador_provincia.prov_x_id_patch(_req, _res);
 });
 app.delete("/paises/:id/provincias/:idp", (_req, _res) => {
-  Controlador_provincia.prov_x_id_delete(_req, _res);
+
+  controlador_provincia.prov_x_id_delete(_req, _res);
 });
 app.get("/paises/:id/provincias/:idp/lluvias", (_req, _res) => {
   Controlador_lluvias.lluvias(_req, _res);
@@ -79,10 +79,10 @@ app.put("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
 });
 app.patch("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
   
-  Controlador_lluvias.lluvia_x_id_patch;
+  Controlador_lluvias.lluvia_x_id_patch(_req, _res);
 });
 app.delete("/paises/:id/provincias/:idp/lluvias/:idl", (_req, _res) => {
-  Controlador_lluvias.lluvia_x_id_delete;
+  Controlador_lluvias.lluvia_x_id_delete(_req, _res);
 });
 
 app.get("/paises/:id/cant_de_lluvias", (_req, _res) => {

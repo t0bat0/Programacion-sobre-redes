@@ -1,25 +1,11 @@
 import { AnyArray, Schema } from "mongoose";
 import { LLuvia } from "../Lluvia";
 import { Pais } from "../Pais";
-
 import { Provincia } from "../Provincia";
 import { lluviaModel } from "../clases_interface/lluvias_interface";
 import { paisModel } from "../clases_interface/paises_interface";
 import { provinciaModel } from "../clases_interface/provincias_interface";
-import { log } from "console";
-let Paises: Array<Pais> = new Array<Pais>();
 
-let messicountry: Pais = new Pais(10, "lionel messi");
-let messiprovince: Provincia = new Provincia(1010, "mateo");
-let messiprovince2: Provincia = new Provincia(1234, "benjamin");
-let messilluvia: LLuvia = new LLuvia(10, 10);
-messiprovince.lluvias.push(messilluvia);
-messicountry.provincias.push(messiprovince2);
-messicountry.provincias.push(messiprovince);
-
-let Pais2: Pais = new Pais(258, "chad");
-let Pais3: Pais = new Pais(19, "uruguay");
-Paises.push(Pais2, Pais3, messicountry);
 
 export class Controlador_pais {
   static async paises(_req: any, _res: any) {
